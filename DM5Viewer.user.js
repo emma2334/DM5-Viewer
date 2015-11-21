@@ -10,19 +10,24 @@
 // ==/UserScript==
 
 (function(){
+  // modify display
   var a = $('.view_bt .juh').eq(0);
   a.html('（共' + a.find('span').eq(1).html() + '頁）');
   $('.flr.lvzi').remove();
   $('.view_fy').remove();
-  $('.view_bt .juh').eq(0).html($(this).find('span').eq(1));
   $('#showimage').html('');
+  // get images
+  for(i=1; i<=DM5_IMAGE_COUNT; i++){
+    $('#showimage').append('<img src="" data-page="' + i + '">');
+  }
   for(i=1; i<=DM5_IMAGE_COUNT; i++){
     $.ajax({
       url: "chapterfun.ashx",
       data: { cid: DM5_CID, page: i, key: $("#dm5_key").val(), language: 1, gtk: 6 },
       type: "POST",
       success: function (msg) {
-        $('#showimage').append('<img src="' + eval(msg)[0] + '">');
+        a = eval(msg)[0];
+        $('[data-page="' + Number(a.split('\/')[6].split('_')[0]) + '"]').attr('src', a);
       }
     })
   }
