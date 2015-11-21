@@ -16,6 +16,7 @@
   $('.flr.lvzi').remove();
   $('.view_fy').remove();
   $('#showimage').html('');
+
   // get images
   for(i=1; i<=DM5_IMAGE_COUNT; i++){
     $('#showimage').append('<img src="" data-page="' + i + '">');
@@ -31,4 +32,16 @@
       }
     })
   }
+
+  // import css
+  $('head').append('<link rel="stylesheet" href="https://cdn.rawgit.com/emma2334/DM5-Veiwer/master/css/style.css">');
+
+  // navbar
+  $('<nav id="navbar"><ul><li id="prev"></li><li id="list"></li><li id="next"></li><li id="resize"></li><li id="scroll"></li><li id="setting"></li></ul>\
+    </nav><div id="menu">\
+      <div class="title">設定</div><div class="content"></div>\
+      </div>').appendTo('body');
+  $('#setting').click(function(){
+    $('#menu, body, #navbar').toggleClass('open');
+  })
 })();
