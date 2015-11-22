@@ -13,10 +13,10 @@ body.open{
 }
 
 #showimage img{
-  text-align: center;
-}
-#showimage img{
   max-width: 90vw;
+}
+#showimage.minify img{
+  max-width: none;
 }
 
 #navbar{
@@ -43,25 +43,28 @@ body.open{
 }
 #navbar li:hover{
   cursor: pointer;
-  background-color: #FFC16E;
+  background-color: #FFC16E!important;
 }
-#prev{
+#navbar .list{
   border-radius: 6px 0px 0px 0px;
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/prev.png") no-repeat center;
-}
-#list{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/menu.png") no-repeat center;
 }
-#next{
+#navbar .next{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/next.png") no-repeat center;
 }
-#resize{
+#navbar .resize{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/zoom.png") no-repeat center;
 }
-#scroll{
+#navbar .resize.minify{
+  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/min.png") no-repeat center;
+}
+#navbar .scroll{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/scroll.png") no-repeat center;
 }
-#setting{
+#navbar .scroll.stop{
+  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/stop.png") no-repeat center;
+}
+#navbar .setting{
   border-radius: 0px 0px 0px 6px;
   border-bottom: 0px !important;
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/setting.png") no-repeat center;
