@@ -12,8 +12,15 @@
 (function(){
   // initial
   var a = window.location, b;
-  if(a.pathname != DM5_CURL && (a.hash!='' || a.hash!='#ipg1' || a.hash!='#itop')) a.pathname = DM5_CURL;
-  var init_num = Number($('#cp_image').attr('src').split('\/')[6].split('_')[0])-1;
+  if(a.hash!=""){
+    b = Number(a.hash.split('#ipg')[1]);
+    if(isNaN(b)) b=1;
+  }else if(a.pathname==DM5_CURL){
+    b=1;
+  }else{
+    b = Number(a.pathname.split('/m' + DM5_CID + '-p')[1].split('/')[0]);
+  }
+  var init_num = Number($('#cp_image').attr('src').split('\/')[6].split('_')[0])-b;
 
   // modify display
   a = $('.view_bt .juh').eq(0);
@@ -21,7 +28,7 @@
   $('.flr.lvzi').remove();
   $('.view_fy').remove();
   $('#showimage').html('');
-  var intro = $('.lan_kk2').eq(0).find('.innr8').eq(0);
+  var intro = $('.lan_kk2').eq(0);
   $('#index_mian').remove();
 
   // get images
@@ -43,11 +50,12 @@
   // import css
   $('head').append('<link rel="stylesheet" href="https://cdn.rawgit.com/emma2334/DM5-Veiwer/master/css/style.css">');
 
-  // navbar
+  // create navbar
   $('<nav id="navbar"><ul><li class="list" title="返回目錄"></li><li class="next" title="下一章"></li><li class="resize" title="自適應寬度"></li><li class="scroll" title="自動滾動"></li><li class="setting" title="設定"></li></ul></nav>\
       <div id="menu">\
         <div class="title">設定</div><div class="content">\
-          <div class="innr8">' + intro.html() + '</div><hr>\
+          <div class="innr8">' + intro.find('.innr8').eq(0).html() + '</div>\
+          <div class="page">跳到第 <input name="page" type="number" min="1" max="' + DM5_IMAGE_COUNT + '" style="width: 40px;">/' + DM5_IMAGE_COUNT + ' 頁 <button>Go</button></div><hr>\
           <div class="light">開燈：<input name="light" type="checkbox"></div>\
           <div class="resize">自適應寬度：<input name="resize" type="checkbox"></div>\
           <div class="speed">速度：<input name="speed" type="number" value="1" min="1" style="width: 70px;"> <button>重設</button></div>\
@@ -59,13 +67,16 @@
     $('[name="resize"]').attr('checked', true);
     $('#showimage').addClass('minify');
   }
+  /* -------------
+    navbar
+  ------------- */
   // list
   $('#navbar .list').click(function(){
-    window.location.href = $('#index_right .red_lj a')[0].href;
+    window.location.href = intro.find('.red_lj a')[0].href;
   });
   // next chapter
   $('#navbar .next').click(function(){
-    $('#index_right a.redzia').length<2 ? alert('目前為最新章節') : window.location.href = $('#index_right a.redzia')[1].href;
+    intro.find('a.redzia').length<2 ? alert('目前為最新章節') : window.location.href = intro.find('a.redzia')[1].href;
   });
   // resize images
   $('#navbar .resize, [name="resize"]').click(function(){
@@ -87,13 +98,13 @@
     $('#navbar .scroll').toggleClass('stop');
     autoScroll();
   });
-  $('[name="speed"]').change(function(){
-    autoScroll();
-  });
   function autoScroll(){
     clearInterval(intervalHandle);
+    if(Number($('[name="speed"]').val())<1){
+      alert('速度最少要為1');
+      $('[name="speed"]').val(1);
+    }
     var speed = Number($('[name="speed"]').val());
-    if(speed<1) speed=1;
     if($('#navbar .scroll').hasClass('stop')) intervalHandle = setInterval(function() { window.scrollBy(0, speed);}, 10);
     else clearInterval(intervalHandle);
   }
@@ -102,7 +113,25 @@
     $('#menu, body, #navbar').toggleClass('open');
   });
 
-  // menu
+  /* -------------
+    menu
+  ------------- */
+  // scroll to specific page
+  $('[name="page"]').change(function(){
+    changePage();
+  });
+  $('#menu .page button').click(function(){
+    $('[name="speed"]').val(1);
+    changePage();
+  });
+  function changePage(){
+    a = $('[name="page"]').val();
+    if(a<1 || a>DM5_IMAGE_COUNT){
+      $('[name="page"]').val('');
+      if(a!='') alert('超過頁數範圍了');
+    }else $('html,body').animate({scrollTop: $('[data-page="' + a + '"]').offset().top}, 500);
+  }
+  // change background color
   $('#menu [name="light"]').click(function(){
     if($('[name="light"]').is(':checked')){
       $('body').addClass('bdcolor').removeClass('bdblackcolor');
@@ -111,6 +140,10 @@
       $('body').removeClass('bdcolor').addClass('bdblackcolor');
       $.cookie("isLight", "off", { path: "/", domain: cookiedm });
     }
+  });
+  // auto scrolling
+  $('[name="speed"]').change(function(){
+    autoScroll();
   });
   $('#menu .speed button').click(function(){
     $('[name="speed"]').val(1);
