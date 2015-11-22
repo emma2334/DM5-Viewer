@@ -11,12 +11,18 @@ body.open{
   overflow-x: hidden;
   position: relative;
 }
+.bdblackcolor {
+  background: #4A4A4A url(http://css122.us.cdndm.com/v201511201052/default/images/nr/bg.gif) repeat-x;
+}
+.bdblackcolor .flr{
+  color: white;
+}
 
-#showimage img{
-  max-width: 90vw;
+#showimage{
+  background: transparent !important;
 }
 #showimage.minify img{
-  max-width: none;
+  max-width: 90vw;
 }
 
 #navbar{
@@ -45,18 +51,24 @@ body.open{
   cursor: pointer;
   background-color: #FFC16E!important;
 }
-#navbar .list{
+#navbar li:first-of-type{
   border-radius: 6px 0px 0px 0px;
+}
+#navbar li:last-of-type{
+  border-radius: 0px 0px 0px 6px;
+  border-bottom: 0px !important;
+}
+#navbar .list{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/menu.png") no-repeat center;
 }
 #navbar .next{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/next.png") no-repeat center;
 }
 #navbar .resize{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/zoom.png") no-repeat center;
+  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/min.png") no-repeat center;
 }
 #navbar .resize.minify{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/min.png") no-repeat center;
+  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/zoom.png") no-repeat center;
 }
 #navbar .scroll{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/scroll.png") no-repeat center;
@@ -65,8 +77,6 @@ body.open{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/stop.png") no-repeat center;
 }
 #navbar .setting{
-  border-radius: 0px 0px 0px 6px;
-  border-bottom: 0px !important;
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/setting.png") no-repeat center;
 }
 
@@ -98,4 +108,9 @@ body.open{
 #menu .content{
   padding: 20px;
   word-break: break-word;
+  font-size: 16px;
+  line-height: 28px;
+}
+#menu .content .innr8{
+  font-size: 12px;
 }
