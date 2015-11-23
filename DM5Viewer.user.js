@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      0.5
+// @version      0.6
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
 // @exclude      http://www.dm5.com/manhua-*
+// @exclude      http://www.dm5.com/m*-end/
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/DM5Viewer.user.js
 // ==/UserScript==
@@ -50,6 +51,7 @@
   // import css
   $('head').append('<link rel="stylesheet" href="https://cdn.rawgit.com/emma2334/DM5-Veiwer/master/css/style.css">');
 
+
   // create navbar
   $('<nav id="navbar"><ul><li class="list" title="返回目錄"></li><li class="next" title="下一章"></li><li class="resize" title="自適應寬度"></li><li class="scroll" title="自動滾動"></li><li class="setting" title="設定"></li></ul></nav>\
       <div id="menu">\
@@ -58,6 +60,7 @@
           <div class="page">跳到第 <input name="page" type="number" min="1" max="' + DM5_IMAGE_COUNT + '" style="width: 40px;">/' + DM5_IMAGE_COUNT + ' 頁 <button>Go</button></div><hr>\
           <div class="light">開燈：<input name="light" type="checkbox"></div>\
           <div class="resize">自適應寬度：<input name="resize" type="checkbox"></div>\
+          <div class="resize">自動翻頁：<input name="next" type="checkbox"></div>\
           <div class="speed">速度：<input name="speed" type="number" value="1" min="1" style="width: 70px;"> <button>重設</button></div>\
         </div>\
       </div>').appendTo('body');
@@ -67,6 +70,7 @@
     $('[name="resize"]').attr('checked', true);
     $('#showimage').addClass('minify');
   }
+  if($.cookie("autoNext")!='false') $('[name="next"]').attr('checked', true);
   /* -------------
     navbar
   ------------- */
@@ -106,7 +110,6 @@
     }
     var speed = Number($('[name="speed"]').val());
     if($('#navbar .scroll').hasClass('stop')) intervalHandle = setInterval(function() { window.scrollBy(0, speed);}, 10);
-    else clearInterval(intervalHandle);
   }
   // setting
   $('#navbar .setting').click(function(){
@@ -140,6 +143,18 @@
       $('body').removeClass('bdcolor').addClass('bdblackcolor');
       $.cookie("isLight", "off", { path: "/", domain: cookiedm });
     }
+  });
+  // auto change chapter
+  var flag=0;
+  $(window).scroll(function(){
+    if(scrollY>$('.view_ts').last().offset().top-window.innerHeight && flag==0 && $.cookie("autoNext")!='false'){
+      flag=1;
+      intro.find('a.redzia').length<2 ? setTimeout(function(){alert('目前為最新章節')}, 500) : window.location.href = intro.find('a.redzia')[1].href;
+    }
+    if(scrollY<=$('.view_ts').last().offset().top-window.innerHeight) flag=0;
+  });
+  $('#menu [name="next"]').click(function(){
+      $.cookie("autoNext", $('[name="next"]').is(':checked'), { path: "/", domain: cookiedm });
   });
   // auto scrolling
   $('[name="speed"]').change(function(){

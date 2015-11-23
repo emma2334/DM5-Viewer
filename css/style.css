@@ -114,3 +114,6 @@ body.open{
 #menu .content .innr8{
   font-size: 12px;
 }
+#menu .content button{
+  cursor: pointer;
+}
