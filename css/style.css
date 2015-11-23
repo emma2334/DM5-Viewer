@@ -21,6 +21,9 @@ body.open{
 #showimage{
   background: transparent !important;
 }
+#showimage img {
+    margin: 10px 0px;
+}
 #showimage.minify img{
   max-width: 90vw;
 }

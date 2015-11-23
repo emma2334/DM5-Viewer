@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      0.6
+// @version      0.6.1
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
@@ -11,18 +11,7 @@
 // ==/UserScript==
 
 (function(){
-  // initial
-  var a = window.location, b;
-  if(a.hash!=""){
-    b = Number(a.hash.split('#ipg')[1]);
-    if(isNaN(b)) b=1;
-  }else if(a.pathname==DM5_CURL){
-    b=1;
-  }else{
-    b = Number(a.pathname.split('/m' + DM5_CID + '-p')[1].split('/')[0]);
-  }
-  var init_num = Number($('#cp_image').attr('src').split('\/')[6].split('_')[0])-b;
-
+  var a, b;
   // modify display
   a = $('.view_bt .juh').eq(0);
   a.html('（共' + a.find('span').eq(1).html() + '頁）');
@@ -33,24 +22,26 @@
   $('#index_mian').remove();
 
   // get images
-  for(i=1; i<=DM5_IMAGE_COUNT; i++){
-    $('#showimage').append('<img src="" data-page="' + i + '">');
-  }
-  for(i=1; i<=DM5_IMAGE_COUNT; i++){
+  a=1;
+  b = function(){
     $.ajax({
       url: "chapterfun.ashx",
-      data: { cid: DM5_CID, page: i, key: $("#dm5_key").val(), language: 1, gtk: 6 },
+      data: { cid: DM5_CID, page: a, key: $("#dm5_key").val(), language: 1, gtk: 6 },
       type: "POST",
       success: function (msg) {
-        a = eval(msg)[0];
-        $('[data-page="' + (Number(a.split('\/')[6].split('_')[0])-init_num) + '"]').attr('src', a);
+        var img = eval(msg);
+        for(i=0; i<img.length; i++){
+          $('#showimage').append('<img src="' + img[i] + '" data-page="' + a + '">');
+          a++
+        }
+        if(a<=DM5_IMAGE_COUNT) b();
       }
     })
-  }
+  };
+  b();
 
   // import css
   $('head').append('<link rel="stylesheet" href="https://cdn.rawgit.com/emma2334/DM5-Veiwer/master/css/style.css">');
-
 
   // create navbar
   $('<nav id="navbar"><ul><li class="list" title="返回目錄"></li><li class="next" title="下一章"></li><li class="resize" title="自適應寬度"></li><li class="scroll" title="自動滾動"></li><li class="setting" title="設定"></li></ul></nav>\
