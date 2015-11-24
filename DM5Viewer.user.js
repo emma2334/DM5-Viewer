@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      0.6.1
+// @version      0.6.2
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
@@ -31,7 +31,7 @@
       success: function (msg) {
         var img = eval(msg);
         for(i=0; i<img.length; i++){
-          $('#showimage').append('<img src="' + img[i] + '" data-page="' + a + '">');
+          $('#showimage').append('<img src="' + img[i] + '" data-page="' + a + '"><br>');
           a++
         }
         if(a<=DM5_IMAGE_COUNT) b();
@@ -41,10 +41,10 @@
   b();
 
   // import css
-  $('head').append('<link rel="stylesheet" href="https://cdn.rawgit.com/emma2334/DM5-Veiwer/master/css/style.css">');
+  $('head').append('<link rel="stylesheet" href="http://emma2334.github.io/DM5-Viewer/files/css/style.css">');
 
   // create navbar
-  $('<nav id="navbar"><ul><li class="list" title="返回目錄"></li><li class="next" title="下一章"></li><li class="resize" title="自適應寬度"></li><li class="scroll" title="自動滾動"></li><li class="setting" title="設定"></li></ul></nav>\
+  $('<nav id="navbar"><ul><li class="list" data-tooltip="返回目錄"></li><li class="next" data-tooltip="下一章"></li><li class="resize" data-tooltip="自適應寬度"></li><li class="scroll" data-tooltip="自動滾動"></li><li class="setting" data-tooltip="設定"></li></ul></nav>\
       <div id="menu">\
         <div class="title">設定</div><div class="content">\
           <div class="innr8">' + intro.find('.innr8').eq(0).html() + '</div>\
@@ -55,7 +55,7 @@
           <div class="speed">速度：<input name="speed" type="number" value="1" min="1" style="width: 70px;"> <button>重設</button></div>\
         </div>\
       </div>').appendTo('body');
-  if($.cookie("isLight")=='on') $('[name="light"]').attr('checked', true);
+  if($.cookie("isLight")!='off') $('[name="light"]').attr('checked', true);
   if($.cookie("nautosize")!=null){
     $('.resize').addClass('minify');
     $('[name="resize"]').attr('checked', true);

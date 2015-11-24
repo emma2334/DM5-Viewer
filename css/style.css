@@ -48,11 +48,29 @@ body.open{
   height: 24px;
   padding: 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.11);
-  opacity: 0.7;
+  opacity: 0.8;
+}
+#navbar li:before{
+  content: attr(data-tooltip);
+  background: #D9444A;
+  color: #FFF;
+  padding: 7px 12px;
+  position: absolute;
+  right: 100%;
+  white-space: pre;
+  opacity: 0;
+  border-radius: 5px 0px 0px 5px;
+  transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -webkit-transition: all .5s ease;
+  -o-transition: all .5s ease;
 }
 #navbar li:hover{
   cursor: pointer;
   background-color: #FFC16E!important;
+}
+#navbar li:hover:before{
+  opacity: 1;
 }
 #navbar li:first-of-type{
   border-radius: 6px 0px 0px 0px;
