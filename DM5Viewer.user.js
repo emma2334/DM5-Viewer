@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      0.6.2
+// @version      0.7
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
@@ -44,14 +44,17 @@
   $('head').append('<link rel="stylesheet" href="http://emma2334.github.io/DM5-Viewer/files/css/style.css">');
 
   // create navbar
-  $('<nav id="navbar"><ul><li class="list" data-tooltip="返回目錄"></li><li class="next" data-tooltip="下一章"></li><li class="resize" data-tooltip="自適應寬度"></li><li class="scroll" data-tooltip="自動滾動"></li><li class="setting" data-tooltip="設定"></li></ul></nav>\
+  $('<nav id="navbar">\
+        <ul><li class="list" data-tooltip="返回目錄"></li><li class="next" data-tooltip="下一章"></li><li class="resize" data-tooltip="自適應寬度"></li><li class="scroll" data-tooltip="自動滾動"></li><li class="setting" data-tooltip="設定"></li></ul>\
+        <div class="curPage"><span><span id="curPage">1</span>/<span>' + DM5_IMAGE_COUNT + '</span></span></div>\
+      </nav>\
       <div id="menu">\
         <div class="title">設定</div><div class="content">\
           <div class="innr8">' + intro.find('.innr8').eq(0).html() + '</div>\
           <div class="page">跳到第 <input name="page" type="number" min="1" max="' + DM5_IMAGE_COUNT + '" style="width: 40px;">/' + DM5_IMAGE_COUNT + ' 頁 <button>Go</button></div><hr>\
           <div class="light">開燈：<input name="light" type="checkbox"></div>\
           <div class="resize">自適應寬度：<input name="resize" type="checkbox"></div>\
-          <div class="resize">自動翻頁：<input name="next" type="checkbox"></div>\
+          <div class="resize">自動換章：<input name="next" type="checkbox"></div>\
           <div class="speed">速度：<input name="speed" type="number" value="1" min="1" style="width: 70px;"> <button>重設</button></div>\
         </div>\
       </div>').appendTo('body');
@@ -62,6 +65,16 @@
     $('#showimage').addClass('minify');
   }
   if($.cookie("autoNext")!='false') $('[name="next"]').attr('checked', true);
+
+  // show current page number
+  var curPage=1;
+  $(window).scroll(function(){
+    $('#showimage img').each(function(){
+      if(scrollY>$(this).offset().top) curPage=$(this).attr('data-page');
+    });
+    $('#curPage').html(curPage);
+  });
+
   /* -------------
     navbar
   ------------- */

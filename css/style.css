@@ -33,12 +33,42 @@ body.open{
   top: 25%;
   right: 0px;
   z-index: 1000;
-  background: #FFA63B;
-  border-radius: 6px 0px 0px 6px;
   transition: all .5s ease;
   -moz-transition: all .5s ease;
   -webkit-transition: all .5s ease;
   -o-transition: all .5s ease;
+}
+#navbar .curPage{
+  background: transparent;
+}
+#navbar .curPage span{
+  font-size: 16px;
+  text-align: right;
+  padding: 5px 0px;
+  background: rgba(255, 255, 255, 0.78);
+  transition: background .5s ease;
+  -moz-transition: background .5s ease;
+  -webkit-transition: background .5s ease;
+  -o-transition: background .5s ease;
+}
+#navbar .curPage span span{
+  padding: 0px 5px;
+  background: transparent !important;
+}
+.bdblackcolor #navbar .curPage span{
+  color: white;
+  background: rgba(74, 74, 74, 0.78);
+}
+#navbar .curPage #curPage{
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+}
+#navbar ul{
+  background: #FFA63B;
+  border-radius: 6px 0px 0px 6px;
+  float: right;
+  margin-bottom: 5px;
 }
 #navbar.open{
   right: 240px;
@@ -56,14 +86,10 @@ body.open{
   color: #FFF;
   padding: 7px 12px;
   position: absolute;
-  right: 100%;
+  right: 44px;
   white-space: pre;
   opacity: 0;
   border-radius: 5px 0px 0px 5px;
-  transition: all .5s ease;
-  -moz-transition: all .5s ease;
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
 }
 #navbar li:hover{
   cursor: pointer;
@@ -91,11 +117,17 @@ body.open{
 #navbar .resize.minify{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/zoom.png") no-repeat center;
 }
+#navbar .resize.minify:before{
+  content: "原始大小";
+}
 #navbar .scroll{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/scroll.png") no-repeat center;
 }
 #navbar .scroll.stop{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/stop.png") no-repeat center;
+}
+#navbar .scroll.stop:before{
+  content: "暫停";
 }
 #navbar .setting{
   background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/setting.png") no-repeat center;
