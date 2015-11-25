@@ -30,7 +30,7 @@ body.open{
 
 #navbar{
   position: fixed;
-  top: 25%;
+  top: 25vh;
   right: 0px;
   z-index: 1000;
   transition: all .5s ease;
