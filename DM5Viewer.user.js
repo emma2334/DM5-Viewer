@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      0.7.1
+// @version      0.7.2
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
@@ -17,7 +17,7 @@
   a.html('（共' + a.find('span').eq(1).html() + '頁）');
   $('.flr.lvzi').remove();
   $('.view_fy').remove();
-  $('#showimage').html('');
+  $('#showimage').html('').css('min-height', '100vh');
   var intro = $('.lan_kk2').eq(0);
   $('#index_mian').remove();
 
@@ -112,6 +112,15 @@
     $('#navbar .scroll').toggleClass('stop');
     autoScroll();
   });
+  $(document).keydown(function(e){
+    if(e.which==32) e.preventDefault();
+  }).keyup(function(e){
+    if(e.which==32){
+      speed = $('[name="speed"]').val()
+      $('#navbar .scroll').toggleClass('stop');
+      autoScroll()
+    };
+  });
   function autoScroll(){
     clearInterval(intervalHandle);
     if(Number($('[name="speed"]').val())<1){
@@ -162,6 +171,10 @@
       intro.find('a.redzia').length<2 ? setTimeout(function(){alert('目前為最新章節')}, 500) : window.location.href = intro.find('a.redzia')[1].href;
     }
     if(scrollY<=$('.view_ts').last().offset().top-window.innerHeight) flag=0;
+    if(scrollY>$('.view_ts').last().offset().top-window.innerHeight){
+      $('#navbar .scroll').removeClass('stop');
+      clearInterval(intervalHandle);
+    }
   });
   $('#menu [name="next"]').click(function(){
       $.cookie("autoNext", $('[name="next"]').is(':checked'), { path: "/", domain: cookiedm });
@@ -176,7 +189,7 @@
   });
 
   // record where you leave off
-  $(window).unload(function(){
+  window.addEventListener("beforeunload", function(){
     localStorage.setItem(intro.find('.red_lj a')[0].pathname, [DM5_CTITLE, DM5_CURL, curPage])
   });
 })();
