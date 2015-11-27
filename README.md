@@ -15,6 +15,7 @@ Please make sure there is a userscript manager in your browser before installing
 - 自動換章
 - 顯示當下讀到的頁碼
 - 紀錄上次閱讀的章節與頁數
+- 透過空白鍵控制自動滾動功能
 
 #### 安裝方法
 請先安裝 [Tampermonkey](http://tampermonkey.net/)（Safari、Chrome）或 [GreaseMonkey](https://addons.mozilla.org/zh-tw/firefox/addon/greasemonkey/)（Firefox）後點擊[這裡](https://github.com/emma2334/DM5-Veiwer/raw/master/DM5Viewer.user.js)。
@@ -32,6 +33,7 @@ This is a userscript for reading comics at [DM5](http://www.dm5.com/). It can sh
 - Turn to next chapter automatically
 - Show current page number
 - Record where you left off
+- Enable automatically scrolling via spacebar
 
 #### Installation
 Please install [Tampermonkey](http://tampermonkey.net/) (Safari、Chrome) or [GreaseMonkey](https://addons.mozilla.org/zh-tw/firefox/addon/greasemonkey/) (Firefox) first, and then click [here](https://github.com/emma2334/DM5-Veiwer/raw/master/DM5Viewer.user.js).
