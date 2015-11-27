@@ -1,3 +1,14 @@
+@font-face {
+  font-family: "Flaticon";
+  src: url("../fonts/flaticon.eot");
+  src: url("../fonts/flaticon.eot#iefix") format("embedded-opentype"),
+  url("../fonts/flaticon.woff") format("woff"),
+  url("../fonts/flaticon.ttf") format("truetype"),
+  url("../fonts/flaticon.svg") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
 body{
   left: 0px;
   position: relative;
@@ -22,7 +33,7 @@ body.open{
   background: transparent !important;
 }
 #showimage img {
-    margin: 10px 0px;
+  margin: 10px 0px;
 }
 #showimage.minify img{
   max-width: 90vw;
@@ -79,8 +90,13 @@ body.open{
   padding: 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.11);
   opacity: 0.8;
+  font-family: Flaticon;
+  font-style: normal;
 }
 #navbar li:before{
+  font-size: 24px;
+}
+#navbar li:after{
   content: attr(data-tooltip);
   background: #D9444A;
   color: #FFF;
@@ -95,7 +111,7 @@ body.open{
   cursor: pointer;
   background-color: #FFC16E!important;
 }
-#navbar li:hover:before{
+#navbar li:hover:after{
   opacity: 1;
 }
 #navbar li:first-of-type{
@@ -105,32 +121,32 @@ body.open{
   border-radius: 0px 0px 0px 6px;
   border-bottom: 0px !important;
 }
-#navbar .list{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/menu.png") no-repeat center;
+#navbar .list:before{
+  content: "\e005";
 }
-#navbar .next{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/next.png") no-repeat center;
+#navbar .next:before{
+  content: "\e006";
 }
-#navbar .resize{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/min.png") no-repeat center;
-}
-#navbar .resize.minify{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/zoom.png") no-repeat center;
+#navbar .resize:before{
+  content: "\e002";
 }
 #navbar .resize.minify:before{
+  content: "\e000";
+}
+#navbar .resize.minify:after{
   content: "原始大小";
 }
-#navbar .scroll{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/scroll.png") no-repeat center;
-}
-#navbar .scroll.stop{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/stop.png") no-repeat center;
+#navbar .scroll:before{
+  content: "\e003";
 }
 #navbar .scroll.stop:before{
+  content: "\e001";
+}
+#navbar .scroll.stop:after{
   content: "暫停";
 }
-#navbar .setting{
-  background: url("https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/img/setting.png") no-repeat center;
+#navbar .setting:before{
+  content: "\e004";
 }
 
 #menu{
