@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      0.7.2
+// @version      0.7.3
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
@@ -76,7 +76,7 @@
   var curPage=1;
   $(window).scroll(function(){
     $('#showimage img').each(function(){
-      if(scrollY>$(this).offset().top) curPage=$(this).attr('data-page');
+      if((scrollY+window.innerHeight/2)>$(this).offset().top) curPage=$(this).attr('data-page');
     });
     $('#curPage').html(curPage);
   });
@@ -104,6 +104,7 @@
     }
     $.cookie("nautosize", a, { path: "/", domain: cookiedm });
     $('[name="resize"]').attr('checked', b);
+    if(curPage>1) $('body').scrollTop($('[data-page="' + curPage + '"]').offset().top);
   });
   // auto scrolling
   var intervalHandle;
