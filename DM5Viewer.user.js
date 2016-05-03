@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      0.7.3
+// @version      0.8.0
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
@@ -32,11 +32,11 @@
         var img = eval(msg);
         for(i=0; i<img.length; i++){
           $('#showimage').append('<img src="' + img[i] + '" data-page="' + count + '"><br>');
-          count++
+          count++;
         }
         if(count<=DM5_IMAGE_COUNT) getImg();
       }
-    })
+    });
   };
   getImg();
 
@@ -73,12 +73,12 @@
   if($.cookie("autoNext")!='false') $('[name="next"]').attr('checked', true);
 
   // show current page number
-  var curPage=1;
+  var cur=1;
   $(window).scroll(function(){
     $('#showimage img').each(function(){
-      if((scrollY+window.innerHeight/2)>$(this).offset().top) curPage=$(this).attr('data-page');
+      if((scrollY+window.innerHeight/2)>$(this).offset().top) cur=$(this).attr('data-page');
     });
-    $('#curPage').html(curPage);
+    $('#curPage').html(cur);
   });
 
   /* -------------
@@ -104,12 +104,12 @@
     }
     $.cookie("nautosize", a, { path: "/", domain: cookiedm });
     $('[name="resize"]').attr('checked', b);
-    if(curPage>1) $('body').scrollTop($('[data-page="' + curPage + '"]').offset().top);
+    if(cur>1) $('body').scrollTop($('[data-page="' + cur + '"]').offset().top);
   });
   // auto scrolling
   var intervalHandle;
   $('#navbar .scroll').click(function(){
-    speed = $('[name="speed"]').val()
+    speed = $('[name="speed"]').val();
     $('#navbar .scroll').toggleClass('stop');
     autoScroll();
   });
@@ -117,9 +117,9 @@
     if(e.which==32) e.preventDefault();
   }).keyup(function(e){
     if(e.which==32){
-      speed = $('[name="speed"]').val()
+      speed = $('[name="speed"]').val();
       $('#navbar .scroll').toggleClass('stop');
-      autoScroll()
+      autoScroll();
     };
   });
   function autoScroll(){
@@ -191,6 +191,17 @@
 
   // record where you leave off
   window.addEventListener("beforeunload", function(){
-    localStorage.setItem(intro.find('.red_lj a')[0].pathname, [DM5_CTITLE, DM5_CURL, curPage])
+    localStorage.setItem(intro.find('.red_lj a')[0].pathname, [DM5_CTITLE, DM5_CURL, cur]);
+    var url = "history.ashx";
+    if(DM5_USERID>0) url='readHistory.ashx';
+    console.log(DM5_CID, +", " + DM5_MID +", "+Number(cur) +", "+DM5_USERID);
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        data: { cid: DM5_CID, mid: DM5_MID, page: Number(cur), uid: DM5_USERID, language: 1 },
+        type: 'GET',
+        success: function (msg) {
+        }
+    });
   });
 })();
