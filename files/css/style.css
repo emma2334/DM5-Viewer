@@ -1,188 +1,23 @@
-@font-face {
-  font-family: "Flaticon";
-  src: url("../fonts/flaticon.eot");
-  src: url("../fonts/flaticon.eot#iefix") format("embedded-opentype"),
-  url("../fonts/flaticon.woff") format("woff"),
-  url("../fonts/flaticon.ttf") format("truetype"),
-  url("../fonts/flaticon.svg") format("svg");
-  font-weight: normal;
-  font-style: normal;
+.vPage .rightToolBar .logo_6 {
+  background: url(https://raw.githubusercontent.com/emma2334/DM5-Viewer/master/img/view_tool_bak.png) no-repeat;
+  background-position: -302px -14px;
 }
 
-body{
-  left: 0px;
-  position: relative;
-  transition: all .5s ease;
-  -moz-transition: all .5s ease;
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
-}
-body.open{
-  left: -240px;
-  overflow-x: hidden;
-  position: relative;
-}
-.bdblackcolor {
-  background: #4A4A4A url(http://css122.us.cdndm.com/v201511201052/default/images/nr/bg.gif) repeat-x;
-}
-.bdblackcolor .flr{
-  color: white;
+.vPage.white .rightToolBar .logo_6 {
+  background: url(https://github.com/emma2334/DM5-Viewer/raw/master/img/view_tool_bak_w.png) no-repeat;
+  background-position: -302px -14px;
 }
 
-#showimage{
-  background: transparent !important;
-}
-#showimage img {
-  margin: 10px 0px;
-}
-#showimage.minify img{
-  max-width: 90vw;
-}
-
-#navbar{
-  position: fixed;
-  top: 25vh;
-  right: 0px;
-  z-index: 1000;
-  transition: all .5s ease;
-  -moz-transition: all .5s ease;
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
-}
-#navbar .curPage{
-  background: transparent;
-}
-#navbar .curPage span{
-  font-size: 16px;
-  text-align: right;
-  padding: 5px 0px;
-  background: rgba(255, 255, 255, 0.78);
-  transition: background .5s ease;
-  -moz-transition: background .5s ease;
-  -webkit-transition: background .5s ease;
-  -o-transition: background .5s ease;
-}
-#navbar .curPage span span{
-  padding: 0px 5px;
-  background: transparent !important;
-}
-.bdblackcolor #navbar .curPage span{
-  color: white;
-  background: rgba(74, 74, 74, 0.78);
-}
-#navbar .curPage #curPage{
-  font-size: 20px;
-  font-weight: bold;
-  color: red;
-}
-#navbar ul{
-  background: #FFA63B;
-  border-radius: 6px 0px 0px 6px;
-  float: right;
-  margin-bottom: 5px;
-}
-#navbar.open{
-  right: 240px;
-}
-#navbar li{
-  width: 24px;
-  height: 24px;
-  padding: 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.11);
-  opacity: 0.8;
-  font-family: Flaticon;
-  font-style: normal;
-}
-#navbar li:before{
-  font-size: 24px;
-}
-#navbar li:after{
-  content: attr(data-tooltip);
-  background: #D9444A;
-  color: #FFF;
-  padding: 7px 12px;
+.chapterBar.tool {
   position: absolute;
-  right: 44px;
-  white-space: pre;
-  opacity: 0;
-  border-radius: 5px 0px 0px 5px;
-}
-#navbar li:hover{
-  cursor: pointer;
-  background-color: #FFC16E!important;
-}
-#navbar li:hover:after{
-  opacity: 1;
-}
-#navbar li:first-of-type{
-  border-radius: 6px 0px 0px 0px;
-}
-#navbar li:last-of-type{
-  border-radius: 0px 0px 0px 6px;
-  border-bottom: 0px !important;
-}
-#navbar .list:before{
-  content: "\e005";
-}
-#navbar .next:before{
-  content: "\e006";
-}
-#navbar .resize:before{
-  content: "\e002";
-}
-#navbar .resize.minify:before{
-  content: "\e000";
-}
-#navbar .resize.minify:after{
-  content: "原始大小";
-}
-#navbar .scroll:before{
-  content: "\e003";
-}
-#navbar .scroll.stop:before{
-  content: "\e001";
-}
-#navbar .scroll.stop:after{
-  content: "暫停";
-}
-#navbar .setting:before{
-  content: "\e004";
-}
-
-#menu{
-  width: 240px;
-  height: 100%;
-  top: 0;
-  z-index: 1000;
-  right: -240px;
-  background: #D6D6D6;
-  position: fixed;
-  transition: all .5s ease;
-  -moz-transition: all .5s ease;
-  -webkit-transition: all .5s ease;
-  -o-transition: all .5s ease;
-}
-#menu.open{
+  bottom: 57px;
   right: 0px;
 }
-#menu .title{
-  text-align: right;
-  font-size: 50px;
-  display: block;
-  margin: 0px;
-  padding: 20px;
-  background-color: #1F1F1F;
-  color: white;
+
+.chapterBar.tool .scroll .list {
+  width: auto;
 }
-#menu .content{
-  padding: 20px;
-  word-break: break-word;
-  font-size: 16px;
-  line-height: 28px;
-}
-#menu .content .innr8{
-  font-size: 12px;
-}
-#menu .content button{
-  cursor: pointer;
+
+.chapterBar.tool .scroll a {
+  float: none;
 }
