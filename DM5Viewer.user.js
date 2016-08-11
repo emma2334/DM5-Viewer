@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      1.0.1
+// @version      1.0.2
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        http://www.dm5.com/m*
@@ -35,4 +35,11 @@
     });
   };
   getImg();
+
+  // import css
+  $('head').append('<link rel="stylesheet" href="http://emma2334.github.io/DM5-Viewer/files/css/style.css">');
+
+  // add menu to toolbar
+  $('.rightToolBar').append('<a href="javascript:$(\'.chapterBar.tool\').toggle();" title="目錄" class="logo_6"></a>');
+  $('.chapterBar.down').clone().removeClass('down').addClass('tool').prependTo('.rightToolBar');
 })();
