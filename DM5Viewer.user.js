@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      1.0.4
+// @version      1.1.0
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        *://www.dm5.com/m*
@@ -14,11 +14,13 @@
 // ==/UserScript==
 
 (function(){
+  const mkey = document.getElementById("dm5_key").value
   // modify display
-  $('.view-comment, .view-paging, .sub-manga').hide();
-  $('.yddiv').remove();
-  $('#showimage').html('').css('min-height', '100vh');
-  $('<style>\
+  document.querySelectorAll('.view-comment, .view-paging, .sub-manga').forEach(e => e.style.display = 'none')
+  document.querySelectorAll('.yddiv').forEach(e => e.remove())
+  document.getElementById('showimage').innerHTML = ''
+  document.getElementById('showimage').style.minHeight = '150vh'
+  document.head.insertAdjacentHTML('beforeend', '<style>\
       #showimage.resize img { max-width: 90vw; }\
       #showimage img { margin-bottom: 25px; }\
       .rightToolBar a.text { display: flex; align-items:center; justify-content:center; line-height: 1; }\
@@ -27,69 +29,79 @@
       #autoNext + label { color: #808080; }\
       #autoNext:checked + label { color: #ffffff; }\
       .white #autoNext:checked + label { color: #212121; }\
-    </style>').appendTo('head');
+    </style>')
 
   // get images
-  var count=1;
-  var getImg = function(){
-    $.ajax({
-      url: 'chapterfun.ashx',
-      data: { cid: DM5_CID, page: count, key:  $("#dm5_key").val(), language: 1, gtk: 6, _cid: DM5_CID, _mid: DM5_MID, _dt: DM5_VIEWSIGN_DT, _sign: DM5_VIEWSIGN },
-      type: 'GET',
-      success: function (msg) {
-        var img = eval(msg);
-        for(var i=0; i<img.length; i++){
-          $('#showimage').append('<img src="' + img[i] + '" data-page="' + count + '"><br>');
-          count++;
+  const getImg = function(count = 1){
+    const xhr = new XMLHttpRequest()
+    xhr.open('GET', `chapterfun.ashx?cid=${DM5_CID}&page=${count}&key=${mkey}&language=${1}&gtk=${6}&_cid=${DM5_CID}&_mid=${DM5_MID}&_dt=${DM5_VIEWSIGN_DT}&_sign=${DM5_VIEWSIGN}`)
+    xhr.send()
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        const img = eval(xhr.responseText)
+        for (let i = 0; i < img.length; i++) {
+          document.getElementById('showimage').insertAdjacentHTML('beforeend', '<img src="' + img[i] + '" data-page="' + count + '"><br>')
+          count++
         }
-        if(count<=DM5_IMAGE_COUNT) getImg();
+        if (count <= DM5_IMAGE_COUNT) getImg(count)
       }
-    });
-  };
-  getImg();
+    }
+  }
+  setTimeout(() => getImg(), 500)
 
 
   // resize image
-  $('.rightToolBar a.logo_3').hasClass('active') ? $('#showimage').addClass('resize') : $('#showimage').removeClass('resize');
+  const resizeBtn = document.querySelectorAll('.rightToolBar a.logo_3')[0]
+  resizeBtn.classList.contains('active')
+    ? document.getElementById('showimage').classList.add('resize')
+    : document.getElementById('showimage').classList.remove('resize')
 
-  $('.rightToolBar a.logo_3').click(function(){
-    $(this).hasClass('active') ? $('#showimage').addClass('resize') : $('#showimage').removeClass('resize');
-  });
+  resizeBtn.addEventListener('click', () => {
+    document.getElementById('showimage').classList.toggle('resize')
+  })
 
   // auto scroll
-  var scroll = false, intervalHandle;
-  $(document).keydown(function(e){
-    if(e.which==32) e.preventDefault();
-  }).keyup(function(e){
-    if(e.which==32){
-      scroll = scroll ? false : true;
-      scroll ? intervalHandle = setInterval(function() { window.scrollBy(0, 1);}, 10) : clearInterval(intervalHandle);
-    };
-  });
+  let scroll = false, intervalHandle;
+  document.addEventListener('keydown', e => {
+    if (e.which === 32) {
+      e.preventDefault()
+      scroll = !scroll
+      scroll
+        ? intervalHandle = setInterval(() => window.scrollBy(0, 1), 10)
+        : clearInterval(intervalHandle)
+    }
+  })
 
   // change chapter
-  $('<a class="text">\
-      <div class="tip" id="">換章</div>\
-      <input type="checkbox" id="autoNext"><label for="autoNext">ᴀᴜᴛᴏ ɴᴇxᴛ</label>\
-    </a>').appendTo('.rightToolBar');
-  $('#autoNext')[0].checked = $.cookie("autoNext")!='false' ? true : false;
+  document.getElementsByClassName('rightToolBar')[0]
+    .insertAdjacentHTML('beforeend',
+      '<a class="text">\
+        <div class="tip" id="">換章</div>\
+        <input type="checkbox" id="autoNext"><label for="autoNext">ᴀᴜᴛᴏ ɴᴇxᴛ</label>\
+      </a>'
+    )
+  document.getElementById('autoNext').checked = localStorage.getItem('autoNext') !== 'false' ? true : false
 
-  var flag=0, next = $('.rightToolBar a.logo_2').eq(0).attr('href');
-  $(window).scroll(function(){
-    if(scrollY>$('footer .container').last().offset().top-window.innerHeight){
+  let alertWasTriggered = false
+  const next = document.querySelectorAll('.rightToolBar a.logo_2')[0].href
+  window.addEventListener('scroll', () => {
+    if(scrollY > document.getElementsByTagName('footer')[0].offsetTop - window.innerHeight){
       if(scroll){
         scroll = false
         clearInterval(intervalHandle);
       }
-      if(flag==0 && $.cookie("autoNext")!='false'){
-        flag=1;
+      if(!alertWasTriggered && localStorage.getItem('autoNext') !== 'false'){
+        alertWasTriggered = true
         next ? window.location.href = next : setTimeout(function(){alert('目前為最新章節')}, 500);
       }
     }
-    if(scrollY<=$('footer .container').last().offset().top-window.innerHeight) flag=0;
-  });
+    else {
+      alertWasTriggered = false
+    }
+  })
 
-  $('#autoNext').change(function(){
-    $.cookie("autoNext", this.checked, { path: "/", domain: cookiedm });
-  });
+  document.getElementById('autoNext').addEventListener('change', function(){
+    localStorage.setItem('autoNext', this.checked)
+  })
 })();
