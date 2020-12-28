@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      1.1.0
+// @version      1.1.1
 // @description  Display all comic images at once.
 // @author       Emma (emma2334)
 // @match        *://www.dm5.com/m*
@@ -14,7 +14,20 @@
 // ==/UserScript==
 
 (function(){
-  const mkey = document.getElementById("dm5_key").value
+  const cookie = document.cookie.split(';').reduce((obj, e) => {
+    const [ key, value ] = e.split('=')
+    return {
+      ...obj,
+      [key.replace(/\s/g, '')]: value
+    }
+  }, {})
+
+  const config = {
+    MKEY: document.getElementById("dm5_key").value,
+    AUTO_SCROLL: false,
+    RESIZE: cookie.nautosize,
+  }
+
   // modify display
   document.querySelectorAll('.view-comment, .view-paging, .sub-manga').forEach(e => e.style.display = 'none')
   document.querySelectorAll('.yddiv').forEach(e => e.remove())
@@ -32,16 +45,17 @@
     </style>')
 
   // get images
-  const getImg = function(count = 1){
+  const getImg = (count = 1) => {
     const xhr = new XMLHttpRequest()
-    xhr.open('GET', `chapterfun.ashx?cid=${DM5_CID}&page=${count}&key=${mkey}&language=${1}&gtk=${6}&_cid=${DM5_CID}&_mid=${DM5_MID}&_dt=${DM5_VIEWSIGN_DT}&_sign=${DM5_VIEWSIGN}`)
+    xhr.open('GET', `chapterfun.ashx?cid=${DM5_CID}&page=${count}&key=${config.MKEY}&language=${1}&gtk=${6}&_cid=${DM5_CID}&_mid=${DM5_MID}&_dt=${DM5_VIEWSIGN_DT}&_sign=${DM5_VIEWSIGN}`)
     xhr.send()
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
         const img = eval(xhr.responseText)
         for (let i = 0; i < img.length; i++) {
-          document.getElementById('showimage').insertAdjacentHTML('beforeend', '<img src="' + img[i] + '" data-page="' + count + '"><br>')
+          document.getElementById('showimage')
+            .insertAdjacentHTML('beforeend', `<img src="${img[i]}" data-page="${count}"><br>`)
           count++
         }
         if (count <= DM5_IMAGE_COUNT) getImg(count)
@@ -53,23 +67,34 @@
 
   // resize image
   const resizeBtn = document.querySelectorAll('.rightToolBar a.logo_3')[0]
-  resizeBtn.classList.contains('active')
-    ? document.getElementById('showimage').classList.add('resize')
-    : document.getElementById('showimage').classList.remove('resize')
+  if (config.RESIZE === 'true') {
+    resizeBtn.classList.add('active')
+    document.getElementById('showimage').classList.add('resize')
+  } else {
+    resizeBtn.classList.remove('active')
+    document.getElementById('showimage').classList.remove('resize')
+  }
 
   resizeBtn.addEventListener('click', () => {
     document.getElementById('showimage').classList.toggle('resize')
   })
 
   // auto scroll
-  let scroll = false, intervalHandle;
+  let scroll = false, intervalHandle
+  const setAutoScroll = (scroll = true) => {
+    if (scroll) {
+      config.AUTO_SCROLL = true
+      intervalHandle = setInterval(() => window.scrollBy(0, 1), 10)
+    } else {
+      config.AUTO_SCROLL = false
+      clearInterval(intervalHandle)
+    }
+  }
+
   document.addEventListener('keydown', e => {
     if (e.which === 32) {
       e.preventDefault()
-      scroll = !scroll
-      scroll
-        ? intervalHandle = setInterval(() => window.scrollBy(0, 1), 10)
-        : clearInterval(intervalHandle)
+      setAutoScroll(!config.AUTO_SCROLL)
     }
   })
 
@@ -84,24 +109,22 @@
   document.getElementById('autoNext').checked = localStorage.getItem('autoNext') !== 'false' ? true : false
 
   let alertWasTriggered = false
-  const next = document.querySelectorAll('.rightToolBar a.logo_2')[0].href
+  const next = document.querySelectorAll('.rightToolBar a.logo_2')
   window.addEventListener('scroll', () => {
     if(scrollY > document.getElementsByTagName('footer')[0].offsetTop - window.innerHeight){
-      if(scroll){
-        scroll = false
-        clearInterval(intervalHandle);
+      if(config.AUTO_SCROLL){
+        setAutoScroll(false)
       }
       if(!alertWasTriggered && localStorage.getItem('autoNext') !== 'false'){
         alertWasTriggered = true
-        next ? window.location.href = next : setTimeout(function(){alert('目前為最新章節')}, 500);
+        next ? window.location.href = next[0].href : setTimeout(() => {alert('目前為最新章節')}, 500);
       }
-    }
-    else {
+    } else {
       alertWasTriggered = false
     }
   })
 
-  document.getElementById('autoNext').addEventListener('change', function(){
+  document.getElementById('autoNext').addEventListener('change', () => {
     localStorage.setItem('autoNext', this.checked)
   })
-})();
+})()
