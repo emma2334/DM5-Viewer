@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      1.1.1
-// @description  Display all comic images at once.
+// @version      1.1.2
+// @description  A script to expand comic content.
 // @author       Emma (emma2334)
 // @match        *://www.dm5.com/m*
 // @exclude      *://www.dm5.com/manhua-*
@@ -9,11 +9,12 @@
 // @match        *://tel.1kkk.com/ch*
 // @match        *://tel.1kkk.com/ep*
 // @match        *://tel.1kkk.com/other*
+// @icon         https://www.google.com/s2/favicons?domain=dm5.com
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/DM5Viewer.user.js
 // ==/UserScript==
 
-(function(){
+(function() {
   const cookie = document.cookie.split(';').reduce((obj, e) => {
     const [ key, value ] = e.split('=')
     return {
@@ -23,16 +24,14 @@
   }, {})
 
   const config = {
-    MKEY: document.getElementById("dm5_key").value,
     AUTO_SCROLL: false,
     RESIZE: cookie.nautosize,
+    NEED_EXPAND: !document.getElementById('barChapter'),
   }
 
   // modify display
-  document.querySelectorAll('.view-comment, .view-paging, .sub-manga').forEach(e => e.style.display = 'none')
+  document.querySelectorAll('.view-comment, .sub-manga').forEach(e => {e.style.display = 'none'})
   document.querySelectorAll('.yddiv').forEach(e => e.remove())
-  document.getElementById('showimage').innerHTML = ''
-  document.getElementById('showimage').style.minHeight = '150vh'
   document.head.insertAdjacentHTML('beforeend', '<style>\
       #showimage.resize img { max-width: 90vw; }\
       #showimage img { margin-bottom: 25px; }\
@@ -44,40 +43,9 @@
       .white #autoNext:checked + label { color: #212121; }\
     </style>')
 
-  // get images
-  const getImg = (count = 1) => {
-    const xhr = new XMLHttpRequest()
-    xhr.open('GET', `chapterfun.ashx?cid=${DM5_CID}&page=${count}&key=${config.MKEY}&language=${1}&gtk=${6}&_cid=${DM5_CID}&_mid=${DM5_MID}&_dt=${DM5_VIEWSIGN_DT}&_sign=${DM5_VIEWSIGN}`)
-    xhr.send()
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        const img = eval(xhr.responseText)
-        for (let i = 0; i < img.length; i++) {
-          document.getElementById('showimage')
-            .insertAdjacentHTML('beforeend', `<img src="${img[i]}" data-page="${count}"><br>`)
-          count++
-        }
-        if (count <= DM5_IMAGE_COUNT) getImg(count)
-      }
-    }
-  }
-  setTimeout(() => getImg(), 500)
-
-
-  // resize image
+  // sync with resize setting in cookie
   const resizeBtn = document.querySelectorAll('.rightToolBar a.logo_3')[0]
-  if (config.RESIZE === 'true') {
-    resizeBtn.classList.add('active')
-    document.getElementById('showimage').classList.add('resize')
-  } else {
-    resizeBtn.classList.remove('active')
-    document.getElementById('showimage').classList.remove('resize')
-  }
-
-  resizeBtn.addEventListener('click', () => {
-    document.getElementById('showimage').classList.toggle('resize')
-  })
+  resizeBtn.classList.toggle('active', config.RESIZE === 'true')
 
   // auto scroll
   let scroll = false, intervalHandle
@@ -117,14 +85,44 @@
       }
       if(!alertWasTriggered && localStorage.getItem('autoNext') !== 'false'){
         alertWasTriggered = true
-        next ? window.location.href = next[0].href : setTimeout(() => {alert('目前為最新章節')}, 500);
+        setTimeout(() => {
+          next.length ? window.location.href = next[0].href : alert('目前為最新章節')
+        }, 500);
       }
     } else {
       alertWasTriggered = false
     }
   })
 
-  document.getElementById('autoNext').addEventListener('change', () => {
-    localStorage.setItem('autoNext', this.checked)
+  document.getElementById('autoNext').addEventListener('change', e => {
+    localStorage.setItem('autoNext', e.target.checked)
   })
+
+
+  if(config.NEED_EXPAND) {
+    document.querySelectorAll('.view-paging').forEach(e => {e.style.display = 'none'})
+    document.getElementById('showimage').innerHTML = ''
+    document.getElementById('showimage').style.minHeight = '150vh'
+
+    // expand content
+    const getImg = (count = 1) => {
+      fetch(`chapterfun.ashx?cid=${DM5_CID}&page=${count}&language=${1}&gtk=${6}&_cid=${DM5_CID}&_mid=${DM5_MID}&_dt=${DM5_VIEWSIGN_DT}&_sign=${DM5_VIEWSIGN}`)
+        .then(res => res.text())
+        .then(res => {
+          eval(res).forEach(e => {
+            document.getElementById('showimage')
+              .insertAdjacentHTML('beforeend', `<img src="${e}" alt="${count}"><br>`)
+            count++
+          })
+          if (count <= DM5_IMAGE_COUNT) getImg(count)
+        })
+    }
+    setTimeout(() => getImg(), 500)
+
+    // setup resizing
+    document.getElementById('showimage').classList.toggle('resize', config.RESIZE === 'true')
+    resizeBtn.addEventListener('click', () => {
+      document.getElementById('showimage').classList.toggle('resize')
+    })
+  }
 })()
