@@ -24,7 +24,7 @@
   }, {})
 
   const config = {
-    AUTO_SCROLL: false,
+    SCROLL_SPEED: 0,
     RESIZE: cookie.nautosize,
     NEED_EXPAND: !document.getElementById('barChapter'),
   }
@@ -32,45 +32,84 @@
   // modify display
   document.querySelectorAll('.view-comment, .sub-manga').forEach(e => {e.style.display = 'none'})
   document.querySelectorAll('.yddiv').forEach(e => e.remove())
-  document.head.insertAdjacentHTML('beforeend', '<style>\
-      #showimage.resize img { max-width: 90vw; }\
-      #showimage img { margin-bottom: 25px; }\
-      .rightToolBar a.text { display: flex; align-items:center; justify-content:center; line-height: 1; }\
-      .rightToolBar .text label:hover { cursor: pointer;}\
-      #autoNext { position: absolute; visibility: hidden; }\
-      #autoNext + label { color: #808080; }\
-      #autoNext:checked + label { color: #ffffff; }\
-      .white #autoNext:checked + label { color: #212121; }\
-    </style>')
+  document.head.insertAdjacentHTML('beforeend', `<style>
+      #showimage.resize img {
+        max-width: 90vw;
+      }
+      #showimage img {
+        margin-bottom: 25px;
+      }
+      .rightToolBar {
+        color: #808080;
+      }
+      .rightToolBar a.text {
+        display: flex;
+        align-items:center;
+        justify-content:center;
+        line-height: 1;
+      }
+      .rightToolBar a.text *:hover {
+        cursor: pointer;
+      }
+      .rightToolBar a.text:hover,
+      #speed:not([data-speed="0"]),
+      #autoNext:checked + label {
+        color: #ffffff;
+      }
+      .white .rightToolBar a:hover,
+      .white #speed:not([data-speed="0"]),
+      .white #autoNext:checked + label {
+        color: #212121;
+      }
+      #autoNext {
+        position: absolute;
+        visibility: hidden;
+      }
+      #speed {
+        width: 100%;
+        text-align: center;
+      }
+      #speed:before {
+        content: attr(data-speed)"x";
+      }
+    </style>`)
 
   // sync with resize setting in cookie
   const resizeBtn = document.querySelectorAll('.rightToolBar a.logo_3')[0]
   resizeBtn.classList.toggle('active', config.RESIZE === 'true')
 
   // auto scroll
-  let scroll = false, intervalHandle
-  const setAutoScroll = (scroll = true) => {
-    if (scroll) {
-      config.AUTO_SCROLL = true
-      intervalHandle = setInterval(() => window.scrollBy(0, 1), 10)
-    } else {
-      config.AUTO_SCROLL = false
-      clearInterval(intervalHandle)
-    }
+  document.getElementsByClassName('rightToolBar')[0]
+    .insertAdjacentHTML('beforeend',
+      '<a class="text">\
+        <div class="tip">捲動</div>\
+        <div id="speed" data-speed="0"><br />⟱</div>\
+      </a>'
+    )
+  let intervalHandle
+  const setAutoScroll = (speed = 0) => {
+    config.SCROLL_SPEED = speed % 4
+    clearInterval(intervalHandle)
+    intervalHandle = setInterval(() => window.scrollBy(0, config.SCROLL_SPEED), 10)
+    document.getElementById('speed').setAttribute('data-speed', config.SCROLL_SPEED);
   }
 
   document.addEventListener('keydown', e => {
     if (e.which === 32) {
       e.preventDefault()
-      setAutoScroll(!config.AUTO_SCROLL)
+      setAutoScroll(++config.SCROLL_SPEED)
     }
+  })
+
+  document.getElementById('speed').parentElement.addEventListener('click', () => {
+    setAutoScroll(++config.SCROLL_SPEED)
   })
 
   // change chapter
   document.getElementsByClassName('rightToolBar')[0]
     .insertAdjacentHTML('beforeend',
       '<a class="text">\
-        <div class="tip" id="">換章</div>\
+        <div class="tip">換章</div>\
         <input type="checkbox" id="autoNext"><label for="autoNext">ᴀᴜᴛᴏ ɴᴇxᴛ</label>\
       </a>'
     )
@@ -80,7 +119,7 @@
   const next = document.querySelectorAll('.rightToolBar a.logo_2')
   window.addEventListener('scroll', () => {
     if(scrollY > document.getElementsByTagName('footer')[0].offsetTop - window.innerHeight){
-      if(config.AUTO_SCROLL){
+      if(config.SCROLL_SPEED){
         setAutoScroll(false)
       }
       if(!alertWasTriggered && localStorage.getItem('autoNext') !== 'false'){
