@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      1.1.2
+// @version      1.2.0
 // @description  A script to expand comic content.
 // @author       Emma (emma2334)
-// @match        *://www.dm5.com/m*
-// @exclude      *://www.dm5.com/manhua-*
-// @exclude      *://www.dm5.com/m*-end/
-// @match        *://tel.1kkk.com/ch*
-// @match        *://tel.1kkk.com/ep*
-// @match        *://tel.1kkk.com/other*
+// @include      /^http[s]?\:\/\/.*(dm5|1kkk|online).*\/m[0-9]+/
+// @exclude      /^http[s]?\:\/\/.*dm5.*\/manhua-.*/
+// @exclude      /^http[s]?\:\/\/m.dm5.*\/m[0-9]+/
+// @include      /^http[s]?\:\/\/.*1kkk.*\/(ch|ep|other).+/
+// @exclude      /^http[s]?\:\/\/m.1kkk.*/
 // @icon         https://www.google.com/s2/favicons?domain=dm5.com
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/DM5Viewer.user.js
