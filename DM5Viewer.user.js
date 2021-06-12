@@ -14,7 +14,9 @@
 // @downloadURL  https://raw.githubusercontent.com/emma2334/DM5-Veiwer/master/DM5Viewer.user.js
 // ==/UserScript==
 
-(function() {
+document.onreadystatechange = function() {
+  if(document.readyState !== 'complete') return
+
   const cookie = document.cookie.split(';').reduce((obj, e) => {
     const [ key, value ] = e.split('=')
     return {
@@ -37,9 +39,11 @@
         max-width: 90vw;
       }
       #showimage img {
-        margin-bottom: 25px;
+        display: block;
+        margin: 0 auto 25px;
       }
-      .rightToolBar {
+      .rightToolBar,
+      #page {
         color: #808080;
       }
       .rightToolBar a.text {
@@ -72,6 +76,19 @@
       #speed:before {
         content: attr(data-speed)"x";
       }
+      #page {
+        position: fixed;
+        right: 25px;
+        bottom: 80px;
+      }
+      #page .cur {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #ffffff;
+      }
+      .white #page .cur {
+        color: #f7545a;
+      }
     </style>`)
 
   // sync with resize setting in cookie
@@ -88,7 +105,7 @@
     )
   let intervalHandle
   const setAutoScroll = (speed = 0) => {
-    config.SCROLL_SPEED = speed % 4
+    config.SCROLL_SPEED = speed % 6
     clearInterval(intervalHandle)
     intervalHandle = setInterval(() => window.scrollBy(0, config.SCROLL_SPEED), 10)
     document.getElementById('speed').setAttribute('data-speed', config.SCROLL_SPEED);
@@ -138,6 +155,20 @@
   })
 
 
+  // current page
+  document.querySelector('.rightToolBar').insertAdjacentHTML('beforebegin', `<div id="page"><span class="cur">1</span>/${DM5_IMAGE_COUNT}<div>`)
+  const visibility = []
+  const observe = new IntersectionObserver((e, o) => {
+    e.forEach(img => {
+      visibility[img.target.dataset.page] = img.isIntersecting
+    })
+    document.querySelector('#page .cur').innerHTML = visibility.indexOf(true)
+  }, {
+    rootMargin: `-33% 0px 0px 0px`,
+    threshold: 0
+  })
+
+
   if(config.NEED_EXPAND) {
     document.querySelectorAll('.view-paging').forEach(e => {e.style.display = 'none'})
     document.getElementById('showimage').innerHTML = ''
@@ -149,8 +180,12 @@
         .then(res => res.text())
         .then(res => {
           eval(res).forEach(e => {
+            const img = document.createElement('img')
+            img.src = e
+            img.dataset.page = count
+            observe.observe(img)
             document.getElementById('showimage')
-              .insertAdjacentHTML('beforeend', `<img src="${e}" alt="${count}"><br>`)
+              .insertAdjacentElement('beforeend', img)
             count++
           })
           if (count <= DM5_IMAGE_COUNT) getImg(count)
@@ -163,5 +198,10 @@
     resizeBtn.addEventListener('click', () => {
       document.getElementById('showimage').classList.toggle('resize')
     })
+  } else {
+    document.querySelectorAll('#barChapter > img').forEach((e, i) => {
+      e.dataset.page = i + 1
+      observe.observe(e)
+    })
   }
-})()
+}
