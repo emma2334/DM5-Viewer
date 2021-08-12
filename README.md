@@ -10,11 +10,9 @@ Please make sure there is a userscript manager in your browser before installing
 
 #### 功能
 - 一次展開全部頁數
-- 自適應寬度
+- 自適應寬度（透過按鈕或空白鍵控制）
 - 自動滾動
 - 自動換章
-- 透過空白鍵控制自動滾動功能
-- 移除廣告
 
 #### 安裝方法
 請先安裝 [Tampermonkey](http://tampermonkey.net/)（Safari、Chrome）或 [GreaseMonkey](https://addons.mozilla.org/zh-tw/firefox/addon/greasemonkey/)（Firefox）後點擊[這裡](https://github.com/emma2334/DM5-Veiwer/raw/master/DM5Viewer.user.js)。
@@ -27,10 +25,8 @@ This is a userscript for reading comics at [DM5](http://www.dm5.com/), [1kkk](ht
 #### Feature
 - Show all pages at once
 - Width adaptability
-- Automatically scrolling
+- Automatically scrolling (through control button or spacebar)
 - Turn to next chapter automatically
-- Enable automatically scrolling via spacebar
-- Remove ads
 
 #### Installation
 Please install [Tampermonkey](http://tampermonkey.net/) (Safari、Chrome) or [GreaseMonkey](https://addons.mozilla.org/zh-tw/firefox/addon/greasemonkey/) (Firefox) first, and then click [here](https://github.com/emma2334/DM5-Veiwer/raw/master/DM5Viewer.user.js).

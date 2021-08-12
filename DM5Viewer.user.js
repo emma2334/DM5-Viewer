@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      1.2.0
+// @version      1.2.1
 // @description  A script to expand comic content.
 // @author       Emma (emma2334)
 // @include      /^http[s]?\:\/\/.*(dm5|1kkk|online).*\/m[0-9]+/
@@ -25,6 +25,7 @@ document.onreadystatechange = function() {
   }, {})
 
   const config = {
+    SCROLL: false,
     SCROLL_SPEED: 0,
     RESIZE: cookie.nautosize,
     NEED_EXPAND: !document.getElementById('barChapter'),
@@ -55,12 +56,12 @@ document.onreadystatechange = function() {
         cursor: pointer;
       }
       .rightToolBar a.text:hover,
-      #speed:not([data-speed="0"]),
+      #speed[data-scroll="true"]:not([data-speed="0"]),
       #autoNext:checked + label {
         color: #ffffff;
       }
       .white .rightToolBar a:hover,
-      .white #speed:not([data-speed="0"]),
+      .white #speed[data-scroll="true"]:not([data-speed="0"]),
       .white #autoNext:checked + label {
         color: #212121;
       }
@@ -99,21 +100,23 @@ document.onreadystatechange = function() {
     .insertAdjacentHTML('beforeend',
       '<a class="text">\
         <div class="tip">捲動</div>\
-        <div id="speed" data-speed="0"><br />⟱</div>\
+        <div id="speed" data-speed="0" data-scroll="false"><br />⟱</div>\
       </a>'
     )
   let intervalHandle
-  const setAutoScroll = (speed = 0) => {
+  const setAutoScroll = (speed = 0, scroll = true) => {
     config.SCROLL_SPEED = speed % 6
+    config.SCROLL = config.SCROLL_SPEED && scroll
     clearInterval(intervalHandle)
-    intervalHandle = setInterval(() => window.scrollBy(0, config.SCROLL_SPEED), 10)
-    document.getElementById('speed').setAttribute('data-speed', config.SCROLL_SPEED);
+    intervalHandle = setInterval(() => window.scrollBy(0, scroll ? config.SCROLL_SPEED : 0), 10)
+    document.getElementById('speed').setAttribute('data-speed', config.SCROLL_SPEED)
+    document.getElementById('speed').setAttribute('data-scroll', config.SCROLL)
   }
 
   document.addEventListener('keydown', e => {
     if (e.which === 32) {
       e.preventDefault()
-      setAutoScroll(++config.SCROLL_SPEED)
+      setAutoScroll(config.SCROLL_SPEED || 1, !config.SCROLL)
     }
   })
 
