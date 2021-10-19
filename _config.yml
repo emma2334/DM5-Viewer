@@ -1,0 +1,8 @@
+title: DM5 Viewer 動漫屋閱讀輔助器
+description: A userscript for reading comics at DM5.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
