@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      2.0.0
+// @version      2.1.0
 // @description  A script to expand comic content.
 // @author       Emma (emma2334)
 // @homepage     https://emma2334.github.io
@@ -52,7 +52,11 @@ const DM5Viewer = {
           eval(res).forEach(e => {
             const img = document.createElement('img')
             img.src = e
+            img.classList.add('loading')
             img.dataset.page = count
+            img.onload = function () {
+              img.classList.remove('loading')
+            }
             dom.find('#showimage').append(img)
             imgControl(img)
             count++
@@ -141,6 +145,22 @@ document.onreadystatechange = function () {
     #showimage img {
       display: block;
       margin: 0 auto 25px;
+    }
+    #showimage img.loading {
+      position: relative;
+      min-height: 800px;
+      background-color: grey;
+    }
+    #showimage img.loading:before {
+      content: attr(data-page);
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 72px;
+    }
+    #showimage, #barChapter {
+      min-height: 200vh;
     }
     .rightToolBar,
     #page {
