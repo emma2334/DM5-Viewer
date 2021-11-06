@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         DM5 Viewer
-// @version      2.1.0
+// @version      2.1.1
 // @description  A script to expand comic content.
 // @author       Emma (emma2334)
 // @homepage     https://emma2334.github.io
@@ -51,9 +51,9 @@ const DM5Viewer = {
         .then(res => {
           eval(res).forEach(e => {
             const img = document.createElement('img')
-            img.src = e
             img.classList.add('loading')
             img.dataset.page = count
+            img.src = e
             img.onload = function () {
               img.classList.remove('loading')
             }
@@ -160,7 +160,8 @@ document.onreadystatechange = function () {
       font-size: 72px;
     }
     #showimage, #barChapter {
-      min-height: 200vh;
+      min-height: 150vh !important;
+      margin-bottom: 200px;
     }
     .rightToolBar,
     #page {
@@ -252,17 +253,18 @@ document.onreadystatechange = function () {
   dom.find('#autoNext').addEventListener('change', e => {
     localStorage.setItem('autoNext', e.target.checked)
   })
-
-  new IntersectionObserver(e => {
-    const { isIntersecting } = e[0]
-    setAutoScroll(0)
-    if (isIntersecting && localStorage.getItem('autoNext') !== 'false') {
-      const next = dom.find('.rightToolBar a.logo_2')
-      setTimeout(() => {
-        next ? (window.location.href = next.href) : alert('目前為最新章節')
-      }, 500)
-    }
-  }).observe(dom.find('footer'))
+  setTimeout(() => {
+    new IntersectionObserver(e => {
+      const { isIntersecting } = e[0]
+      setAutoScroll(0)
+      if (isIntersecting && localStorage.getItem('autoNext') !== 'false') {
+        const next = dom.find('.rightToolBar a.logo_2')
+        setTimeout(() => {
+          next ? (window.location.href = next.href) : alert('目前為最新章節')
+        }, 500)
+      }
+    }).observe(dom.find('footer'))
+  }, 1000)
 
   /* current page */
   const observe = DM5Viewer.observeCurrentPage()
@@ -272,7 +274,6 @@ document.onreadystatechange = function () {
       e.style.display = 'none'
     })
     dom.find('#showimage').innerHTML = ''
-    dom.find('#showimage').style.minHeight = '200vh'
 
     // expand content
     DM5Viewer.expandContent({
